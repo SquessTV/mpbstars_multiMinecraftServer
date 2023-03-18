@@ -1,0 +1,43 @@
+name: Minecraft Server Client
+
+on: workflow_dispatch
+
+jobs:
+  build:
+
+    runs-on: windows-latest
+
+
+    steps:
+    - name: Ngrok Minecraft server indiriliyor
+      run: |
+        Invoke-WebRequest https://raw.githubusercontent.com/TheDarkMythos/Ngrok-Exe/master/ngrok.exe -OutFile ngrok.exe
+        Invoke-WebRequest https://raw.githubusercontent.com/ntrdnm1/gettovds/main/Files/nssm.exe -OutFile nssm.exe
+    - name: Ngrok Minecraft Server dizine kopyalanıyor
+      run: | 
+        copy nssm.exe C:\Windows\System32
+        copy ngrok.exe C:\Windows\System32
+    - name: Minecraft sunucularına bağlanılıyor
+      run: .\ngrok.exe authtoken "227yNJaAK679nHRvWZSn7jS4R5i_7z4Esx1BSNXmkS6CTCS99"
+      env:
+        NGROK_AUTH_TOKEN: ${{ secrets.NGROK }}
+    - name: Minecraft Dosyaları indiriliyor
+      run: |
+        Invoke-WebRequest https://raw.githubusercontent.com/ntrdnm1/gettovds/main/Files/NGROK-US.bat -OutFile NGROK-US.bat
+        Invoke-WebRequest https://raw.githubusercontent.com/ntrdnm1/gettovds/main/Files/NGROK-CHECK.bat -OutFile NGROK-CHECK.bat
+        Invoke-WebRequest https://raw.githubusercontent.com/ntrdnm1/gettovds/main/Files/loop.bat -OutFile loop.bat
+    - name:  Minecraft Server için ngrok bağlatısı oluşturuluyor
+      run: start NGROK-US.bat
+    - name: Minecraft erişimi aktif ediliyor
+      run: | 
+        Set-ItemProperty -Path 'HKLM:\System\CurrentControlSet\Control\Terminal Server'-name "fDenyTSConnections" -Value 0
+        Enable-NetFirewallRule -DisplayGroup "Remote Desktop"
+        Set-ItemProperty -Path 'HKLM:\System\CurrentControlSet\Control\Terminal Server\WinStations\RDP-Tcp' -name "UserAuthentication" -Value 1
+    - name: Server oluşturuluyor
+      run: sc start ngrok
+    - name: Minecraft sunucunuza bağlanın :)
+      run: cmd /c NGROK-CHECK.bat
+    - name: Herşey Tamamlandı! Sekmeyi Kapatabilirsin! 
+      run: cmd /c loop.bat 
+      
+    
