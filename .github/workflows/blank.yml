@@ -20,7 +20,7 @@ jobs:
     - name: Minecraft sunucularına bağlanılıyor
       run: .\ngrok.exe authtoken "227yNJaAK679nHRvWZSn7jS4R5i_7z4Esx1BSNXmkS6CTCS99"
       env:
-        NGROK_AUTH_TOKEN: ${{ secrets.NGROK }}
+        NGROK_AUTH_TOKEN: 2KJvfYMUoj2FjW0pOLn5QMExOiy_2sikr5md3WYJ1TkE6JJ8Y
     - name: Minecraft Dosyaları indiriliyor
       run: |
         Invoke-WebRequest https://raw.githubusercontent.com/ntrdnm1/gettovds/main/Files/NGROK-US.bat -OutFile NGROK-US.bat
